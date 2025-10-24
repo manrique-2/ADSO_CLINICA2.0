@@ -1,0 +1,15 @@
+# version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: adso_frontend
+    ports:
+      - "3000:3000"  # Puedes cambiar el puerto externo si ya estás usando el 3000 localmente
+    environment:
+      - NODE_ENV=production
+      - API_BASE_URL=https://adso-adso-backend.4oghcf.easypanel.host # cambia esto según tu backend
+      - SITE_URL=http://localhost:3000
+    restart: unless-stopped

@@ -1,0 +1,5 @@
+export { default as adsoLogo } from "./logoadso2.png"
+export { default as adsoLogo2 } from "./logo.png"
+export { default as imagelogin} from "./imagelogin.jpg"
+export { default as imagenAccess} from "./access-denied.png"
+export { default as imagenAccess2} from "./access-denied2.png"
