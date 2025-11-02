@@ -15,6 +15,7 @@ export type Tratamiento = {
 export interface TratamientoPaciente {
     id: number; // readOnly
     asunto: string;
+    show_str: string; // readOnly
     observacion?: string;
   descuento: string;
     created_at: string; // ISO date-time string

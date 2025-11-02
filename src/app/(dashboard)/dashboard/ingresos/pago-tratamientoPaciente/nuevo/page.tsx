@@ -15,13 +15,6 @@ export default function PagoTratamiento() {
   const [medicosOptions, setMedicosOptions] = useState<
     Array<{ id: number; name: string }>
   >([]);
-  const [tratamientoPacienteOptions, setTratamientoPacienteOptions] = useState<
-    Array<{
-      id: number;
-      asunto: string;
-      paciente: { id: number; name: string };
-    }>
-  >([]);
   const [pacientesOptions, setPacientesOptions] = useState<
     Array<{ id: number; nomb_pac: string; apel_pac: string }>
   >([]);
@@ -44,26 +37,6 @@ export default function PagoTratamiento() {
     };
 
     fetchMedicos();
-  }, []);
-
-  useEffect(() => {
-    const fetchTratamientoPaciente = async () => {
-      try {
-        const res = await fetchWithAuthRedirect("/api/tratamiento_paciente"); // Ajusta si necesitas paginación
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setTratamientoPacienteOptions(data);
-        } else if (Array.isArray(data.results)) {
-          setTratamientoPacienteOptions(data.results);
-        } else {
-          console.warn("⚠️ Formato de datos inesperado:", data);
-        }
-      } catch (err) {
-        console.error("❌ Error al cargar tratamiento del paciente:", err);
-      }
-    };
-
-    fetchTratamientoPaciente();
   }, []);
 
   useEffect(() => {
@@ -124,7 +97,6 @@ export default function PagoTratamiento() {
           <FormPagoTratamiento
             pacientesOptions={pacientesOptions}
             medicosOptions={medicosOptions}
-            tratamientoPacienteOptions={tratamientoPacienteOptions}
           />
         </div>
       </div>

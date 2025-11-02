@@ -20,12 +20,14 @@ type PacienteSelectProps = {
   value?: string; // id del paciente seleccionado
   onChange: (value: string) => void;
   pacientesOptions?: Paciente[]; // lista inicial (ej: paciente de la cita)
+  has_debt?: boolean; // filtrar solo pacientes con deuda
 };
 
 export default function PacienteSelect({
   value,
   onChange,
   pacientesOptions = [],
+  has_debt,
 }: PacienteSelectProps) {
   const [search, setSearch] = useState("");
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
@@ -41,6 +43,9 @@ export default function PacienteSelect({
         params.set("nomb_pac", search);
         // params.set("page", "1");
         // params.set("page_size", "20");
+        if (has_debt) {
+          params.set("has_debt", "true");
+        }
 
         const res = await fetch(`/api/pacientes?${params.toString()}`);
         if (!res.ok) throw new Error("Error al buscar pacientes");
@@ -74,7 +79,10 @@ export default function PacienteSelect({
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      <Select value={value} onValueChange={onChange}>
+      <Select value={value} onValueChange={(val) => {
+        console.log("Paciente selected:", val);
+        onChange(val);
+      }}>
         <SelectTrigger>
           <SelectValue
             placeholder={loading ? "Buscando..." : "Seleccionar paciente"}
