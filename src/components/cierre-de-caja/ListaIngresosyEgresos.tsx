@@ -40,6 +40,7 @@ export function ListaIngresosyEgresos({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
   const [date, setDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
@@ -116,6 +117,49 @@ export function ListaIngresosyEgresos({
               )}
 
               {/* Buscar */}
+            </Button>
+            <Button
+              className="bg-green-600 hover:bg-green-700 ml-2"
+              onClick={async () => {
+                setReportLoading(true);
+                try {
+                  // Enviar los datos ya cargados en el cliente al endpoint POST para evitar re-fetch y problemas de auth
+                  const payload = {
+                    date,
+                    data,
+                  };
+
+                  const res = await fetch(`/api/cierre-de-caja/report`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                  });
+
+                  if (!res.ok) {
+                    const errJson = await res.json().catch(() => null);
+                    console.error("Error generando reporte:", errJson || res.statusText);
+                    throw new Error("Error generando reporte");
+                  }
+
+                  const blob = await res.blob();
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `cierre-${date}.pdf`;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  URL.revokeObjectURL(url);
+                } catch (err) {
+                  console.error(err);
+                  alert("Error al generar el reporte. Revisa la consola para más detalles.");
+                } finally {
+                  setReportLoading(false);
+                }
+              }}
+              disabled={reportLoading}
+            >
+              {reportLoading ? "Generando..." : "Generar reporte"}
             </Button>
           </div>
         </div>
