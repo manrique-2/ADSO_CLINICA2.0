@@ -124,11 +124,11 @@ export function columns({ fetchCitas }: ColumnProps): ColumnDef<Cita>[] {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                   Hacer pago
                   <HandCoins />
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator /> */}
                 <DropdownMenuItem asChild>
                   <Link
                     href={`/dashboard/citas/agenda/editar/${cita.id}`}

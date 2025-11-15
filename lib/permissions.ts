@@ -25,7 +25,7 @@ export const rolePermissions: Record<string, string[]> = {
     "Tratamiento Paciente",
     "Historia clinica",
     "Ingresos",
-    "Cierre de caja",
+    //"Cierre de caja",
     'Transacciones',
   ],
   enfermero: [

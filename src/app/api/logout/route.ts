@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server"
-import { clearAuthCookies } from "@/lib/auth/cookies"
+import { NextResponse } from "next/server";
+import { clearAuthCookies } from "@/lib/auth/cookies";
 
 export async function POST() {
-    await clearAuthCookies();
+  const response = NextResponse.json({ success: true });
 
-    return NextResponse.json({success: true});
+  // MUST pass response
+  clearAuthCookies(response);
+
+  return response;
 }
