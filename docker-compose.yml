@@ -10,6 +10,6 @@ services:
       - "3000:3000"  # Puedes cambiar el puerto externo si ya estás usando el 3000 localmente
     environment:
       - NODE_ENV=production
-      - API_BASE_URL=https://adso-adso-backend.4oghcf.easypanel.host # cambia esto según tu backend
+      - API_BASE_URL=https://adso-api.mishu-soft.org # cambia esto según tu backend
       - SITE_URL=http://localhost:3000
     restart: unless-stopped

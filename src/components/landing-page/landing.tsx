@@ -37,6 +37,9 @@ export default function LandingPage() {
             <a href="#contacto" className="hover:text-blue-600 font-medium">
               Contacto
             </a>
+            <a href="#ubicacion" className="hover:text-blue-600 font-medium">
+              Ubicación
+            </a>
           </nav>
           <div className="flex items-center gap-2 ">
             {/* <Button variant="outline" size="sm" className="cursor-pointer">
@@ -85,6 +88,13 @@ export default function LandingPage() {
               onClick={() => setMenuOpen(false)}
             >
               Contacto
+            </a>
+            <a
+              href="#ubicacion"
+              className="block hover:text-blue-600"
+              onClick={() => setMenuOpen(false)}
+            >
+              Ubicación
             </a>
             <Link
               href="/login"
@@ -178,12 +188,12 @@ export default function LandingPage() {
           <p className="mb-2">📞 +51 917 435 154 | +51 980 992 776</p>
           <p className="mb-6">✉️ admin@adso-peru.com</p>
 
-          <form className="space-y-4 text-left">
+          {/* <form className="space-y-4 text-left">
             <Input placeholder="Nombre completo" required />
             <Input placeholder="Correo electrónico" type="email" required />
             <Textarea placeholder="Escribe tu mensaje..." rows={4} required />
             <Button type="submit">Enviar mensaje</Button>
-          </form>
+          </form> */}
 
           <div className="mt-8">
             <a
@@ -199,8 +209,9 @@ export default function LandingPage() {
       </section>
 
       {/* Mapa */}
-      <section className="py-10 px-6">
-        <div className="max-w-5xl mx-auto">
+      <section id="ubicacion"className="py-10 px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl font-semibold mb-6">Ubícanos</h2>
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d251.6524538570107!2d-73.24747198721452!3d-3.749824987776656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91ea0fb3495b05e7%3A0x8d84a0fd6fd31563!2sCallao%20176%2C%20Iquitos%2020001!5e0!3m2!1ses!2spe!4v1718782912667!5m2!1ses!2spe"
             width="100%"

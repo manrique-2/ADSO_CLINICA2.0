@@ -1,10 +1,7 @@
 // lib/actions/egresos.ts
-const API_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://adso-adso-backend.4oghcf.easypanel.host";
 
 export async function eliminarEgreso(id: number) {
-  const res = await fetch(`${API_URL}/api/egresos/${id}`, {
+  const res = await fetch(`/api/egresos/${id}`, {
     method: "DELETE",
   });
 

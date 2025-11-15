@@ -97,10 +97,10 @@ export function DataTable<TData, TValue>({
         <div className="flex justify-between ">
           <div>
             {/* <Button className="bg-[#337ab7] hover:bg-[#285e8e] cursor-pointer"> */}
-            <Button className="">
+            {/* <Button className="">
               <Printer />
               Imprimir Lista
-            </Button>
+            </Button> */}
           </div>
           <div>
             <Link

@@ -25,7 +25,10 @@ export function ListEgresos({
   const [tipo, setTipo] = useState<"clinica" | "lab">("clinica");
   const [dataClinica, setDataClinica] = useState<EgresoClinica[]>(initialData.dataClinica);
   const [dataLab, setDataLab] = useState<EgresoLab[]>(initialData.dataLab);
-  const [loading, setLoading] = useState(initialData.dataClinica.length === 0 && initialData.dataLab.length === 0);
+  const [loading, setLoading] = useState(
+    (initialData?.dataClinica?.length ?? 0) === 0 &&
+    (initialData?.dataLab?.length ?? 0) === 0
+  );
   const [error, setError] = useState(false);
   const [fechaRegistro, setFechaRegistro] = useState<string | undefined>(undefined);
 

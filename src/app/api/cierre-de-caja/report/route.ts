@@ -1,38 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authFetchWithCookies } from "@/lib/api/authFetch";
-import { BASE_API } from "@/lib/config";
-import puppeteer from "puppeteer";
+import puppeteer, { LaunchOptions, Page, Browser, Target, ConsoleMessage } from "puppeteer";
 
-function renderHtml(data: any, date: string) {
+function renderHtml(data: any, date: string): string {
   const ingresos = data.ingresos || [];
   const egresos = data.egresos || [];
-    const total_ingresos = data.total_ingresos ?? 0;
-    const total_egresos = data.total_egresos ?? 0;
-    const balance = data.balance ?? 0;
+  const total_ingresos = data.total_ingresos ?? 0;
+  const total_egresos = data.total_egresos ?? 0;
+  const balance = data.balance ?? 0;
 
-    const ingresosRows = ingresos
-      .map(
-        (i: any) => `
-        <tr>
-          <td class="td">${i.paciente || "-"}</td>
-          <td class="td">${i.medico || "-"}</td>
-          <td class="td right">S/ ${Number(i.monto || 0).toFixed(2)}</td>
-          <td class="td">${i.metodo || "-"}</td>
-        </tr>`
-      )
-      .join("");
+  const ingresosRows = ingresos.map((i: any) => `
+    <tr>
+      <td class="td">${i.paciente || "-"}</td>
+      <td class="td">${i.medico || "-"}</td>
+      <td class="td right">S/ ${Number(i.monto || 0).toFixed(2)}</td>
+      <td class="td">${i.metodo || "-"}</td>
+    </tr>
+  `).join("");
 
-  const egresosRows = egresos
-      .map(
-        (e: any) => `
-        <tr>
-          <td class="td">${e.medico || "-"}</td>
-          <td class="td right">S/ ${Number(e.monto || 0).toFixed(2)}</td>
-        </tr>`
-      )
-      .join("");
+  const egresosRows = egresos.map((e: any) => `
+    <tr>
+      <td class="td">${e.medico || "-"}</td>
+      <td class="td right">S/ ${Number(e.monto || 0).toFixed(2)}</td>
+    </tr>
+  `).join("");
 
-    return `
+  return `
     <!doctype html>
     <html>
       <head>
@@ -119,106 +112,96 @@ function renderHtml(data: any, date: string) {
     `;
 }
 
+const PUPPETEER_CONFIG: LaunchOptions = {
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
+  headless: true,
+  // dumpio redirige stdout/stderr de Chromium a los logs del proceso Node.
+  // En producción esto genera mucho ruido; lo desactivamos para logs más limpios.
+  dumpio: false,
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-accelerated-2d-canvas",
+    "--no-first-run",
+    "--no-zygote",
+    "--disable-gpu",
+  ],
+  timeout: 60000,
+};
+
+const PAGE_OPTIONS: Parameters<Page["setContent"]>[1] = {
+  waitUntil: "networkidle0",
+  timeout: 60000,
+};
+
+async function generatePDF(data: any, date: string) {
+  let browser: Browser | null = null;
+  try {
+    browser = await puppeteer.launch(PUPPETEER_CONFIG);
+  } catch (err) {
+    console.error("Error launching puppeteer:", err);
+    throw err;
+  }
+
+  if (!browser) throw new Error("Browser failed to launch");
+
+  // Mejor logging para detectar desconexiones/crashes
+  browser.on("disconnected", () => console.error("Puppeteer browser disconnected"));
+  browser.on("targetdestroyed", (t: Target) => console.warn("Target destroyed:", t && typeof t.url === "function" ? t.url() : t));
+
+  const page = await browser.newPage();
+
+  // No reenviamos todos los console.log del navegador en producción para evitar ruido.
+  // Si necesitas debug, activa dumpio o agrega un LOG_DEBUG env var para habilitar esta sección.
+  page.on("error", (err: Error | unknown) => console.error("Page error:", err));
+
+  try {
+    await page.setContent(renderHtml(data, date), PAGE_OPTIONS);
+    // Espera corta para asegurar que estilos/imagenes se apliquen
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: { top: 20, bottom: 20, left: 20, right: 20 },
+    });
+
+    return pdf.buffer.slice(pdf.byteOffset, pdf.byteOffset + pdf.byteLength);
+  } finally {
+    try {
+      await browser.close();
+    } catch (e) {
+      console.error("Error closing browser:", e);
+    }
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const date = searchParams.get("date") || new Date().toISOString().split("T")[0];
+    const apiPath = `/api/cierre-de-caja?page=1&date=${encodeURIComponent(date)}`;
 
-  const apiPath = `/api/cierre-de-caja?page=1&date=${encodeURIComponent(date)}`;
-      let data: any = null;
-      try {
-        const res = await authFetchWithCookies(apiPath);
-        try {
-
-          const text = await (res as any).text();
-          if (text && text.trim() !== "") {
-            try {
-              data = JSON.parse(text);
-            } catch (err) {
-              console.error("Error parsing JSON text from authFetchWithCookies:", err);
-              data = { ingresos: [], egresos: [], total_ingresos: 0, total_egresos: 0, balance: 0 };
-            }
-          } else {
-            try {
-              const cookieHeader = req.headers.get("cookie") || "";
-              const backendUrl = `${BASE_API}${apiPath}`;
-              const backendRes = await fetch(backendUrl, {
-                headers: {
-                  Cookie: cookieHeader,
-                  Accept: "application/json",
-                },
-                cache: "no-store",
-              });
-
-              if (backendRes.ok) {
-                data = await backendRes.json();
-              } else {
-                console.error("Fallback backend returned non-OK status:", backendRes.status);
-                data = { ingresos: [], egresos: [], total_ingresos: 0, total_egresos: 0, balance: 0 };
-              }
-            } catch (err) {
-              console.error("Error en fallback directo al backend:", err);
-              data = { ingresos: [], egresos: [], total_ingresos: 0, total_egresos: 0, balance: 0 };
-            }
-          }
-        } catch (err) {
-          console.error("No se pudo leer body desde authFetchWithCookies:", err);
-          data = { ingresos: [], egresos: [], total_ingresos: 0, total_egresos: 0, balance: 0 };
-        }
-      } catch (err) {
-        console.error("Error llamando authFetchWithCookies para cierre-de-caja:", err);
-        data = { ingresos: [], egresos: [], total_ingresos: 0, total_egresos: 0, balance: 0 };
-      }
-
-
-    if (!data.ingresos && data.data) {
-      data = data.data;
-    }
-    if (!data.ingresos && data.results) {
-      data = data.results;
+    let data: any;
+    try {
+      const res = await authFetchWithCookies(apiPath);
+      const text = await (res as any).text();
+      data = text.trim() ? JSON.parse(text) : {};
+    } catch {
+      data = {};
     }
 
-    // Si todavía no hay ingresos, intentar buscar arrays útiles dentro del objeto
-    if ((!data.ingresos || data.ingresos.length === 0) && typeof data === "object") {
-      const arrays = Object.entries(data).filter(([, v]) => Array.isArray(v));
-      const found: any = { ingresos: [], egresos: [] };
-      for (const [key, val] of arrays) {
-        const arr = val as any[];
-        if (arr.length === 0) continue;
-        const sample = arr[0];
-        if (sample && ("paciente" in sample || "metodo" in sample || "monto" in sample)) {
-          if (!found.ingresos.length) found.ingresos = arr;
-        } else if (sample && ("medico" in sample || "monto" in sample)) {
-          if (!found.egresos.length) found.egresos = arr;
-        }
-      }
-      // merge found arrays if any
-      if (found.ingresos.length) data.ingresos = found.ingresos;
-      if (found.egresos.length) data.egresos = found.egresos;
-    }
-
-    // Generar HTML simple para el PDF
-    const html = renderHtml(data, date);
-
-    // Lanzar puppeteer y generar PDF
-    const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    const pdf = await page.pdf({ format: "A4", printBackground: true, margin: { top: 20, bottom: 20, left: 20, right: 20 } });
-    await browser.close();
-
-    // Convert Buffer (Uint8Array) to ArrayBuffer slice compatible with Response body
-    const arrayBuffer = pdf.buffer.slice(pdf.byteOffset, pdf.byteOffset + pdf.byteLength);
-
-    return new NextResponse(arrayBuffer as unknown as BodyInit, {
+    const pdfBuffer = await generatePDF(data, date);
+    return new NextResponse(pdfBuffer as any, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=cierre-${date}.pdf`,
       },
     });
-  } catch (error: any) {
-    console.error("Error generando PDF cierre de caja:", error);
+  } catch (error) {
+    console.error("Error generando PDF (GET):", error);
     return NextResponse.json({ detail: "Error al generar PDF" }, { status: 500 });
   }
 }
@@ -227,27 +210,17 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const date = body.date || new Date().toISOString().split("T")[0];
-    const data = body.data || { ingresos: [], egresos: [], total_ingresos: 0, total_egresos: 0, balance: 0 };
+    const data = body.data || {};
 
-    // Generar HTML con los datos recibidos del cliente
-    const html = renderHtml(data, date);
-
-    const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    const pdf = await page.pdf({ format: "A4", printBackground: true, margin: { top: 20, bottom: 20, left: 20, right: 20 } });
-    await browser.close();
-
-    const arrayBuffer = pdf.buffer.slice(pdf.byteOffset, pdf.byteOffset + pdf.byteLength);
-
-    return new NextResponse(arrayBuffer as unknown as BodyInit, {
+    const pdfBuffer = await generatePDF(data, date);
+    return new NextResponse(pdfBuffer as any, {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=cierre-${date}.pdf`,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error generando PDF (POST):", error);
     return NextResponse.json({ detail: "Error al generar PDF" }, { status: 500 });
   }
