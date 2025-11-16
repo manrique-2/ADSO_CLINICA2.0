@@ -109,10 +109,10 @@ export function AppSidebar({
             title: "Registrar",
             url: "/dashboard/tratamiento/registrar",
           },
-          {
-            title: "Comprobantes",
-            url: "/dashboard/tratamiento/comprobantes",
-          },
+          // {
+          //   title: "Comprobantes",
+          //   url: "/dashboard/tratamiento/comprobantes",
+          // },
         ],
       },
       {
@@ -193,60 +193,60 @@ export function AppSidebar({
           },
         ],
       },
-      {
-        title: "Mantenimiento",
-        url: "#",
-        icon: Wrench,
-        items: [
-          {
-            title: "Tipo pago",
-            url: "/dashboard/mantenimiento/tipo pago",
-          },
-          {
-            title: "Moneda",
-            url: "/dashboard/mantenimiento/moneda",
-          },
-          {
-            title: "Banco",
-            url: "/dashboard/mantenimiento/banco",
-          },
-          {
-            title: "Tipo tarjeta",
-            url: "/dashboard/mantenimiento/tipo tarjeta",
-          },
-        ],
-      },
-      {
-        title: "Catalogo",
-        url: "#",
-        icon: Package,
-        items: [
-          {
-            title: "Unidad Medida",
-            url: "/dashboard/catalogo/unidad medida",
-          },
-          {
-            title: "Tipo concepto",
-            url: "#",
-          },
-          {
-            title: "Categoria",
-            url: "/dashboard/catalogo/categoria",
-          },
-          {
-            title: "Especialidad",
-            url: "/dashboard/catalogo/especialidad",
-          },
-          {
-            title: "Tipo Citado",
-            url: "/dashboard/catalogo/tipo citado",
-          },
-          {
-            title: "Alergia",
-            url: "/dashboard/catalogo/alergia",
-          },
-        ],
-      },
+      // {
+      //   title: "Mantenimiento",
+      //   url: "#",
+      //   icon: Wrench,
+      //   items: [
+      //     {
+      //       title: "Tipo pago",
+      //       url: "/dashboard/mantenimiento/tipo pago",
+      //     },
+      //     {
+      //       title: "Moneda",
+      //       url: "/dashboard/mantenimiento/moneda",
+      //     },
+      //     {
+      //       title: "Banco",
+      //       url: "/dashboard/mantenimiento/banco",
+      //     },
+      //     {
+      //       title: "Tipo tarjeta",
+      //       url: "/dashboard/mantenimiento/tipo tarjeta",
+      //     },
+      //   ],
+      // },
+      // {
+      //   title: "Catalogo",
+      //   url: "#",
+      //   icon: Package,
+      //   items: [
+      //     {
+      //       title: "Unidad Medida",
+      //       url: "/dashboard/catalogo/unidad medida",
+      //     },
+      //     {
+      //       title: "Tipo concepto",
+      //       url: "#",
+      //     },
+      //     {
+      //       title: "Categoria",
+      //       url: "/dashboard/catalogo/categoria",
+      //     },
+      //     {
+      //       title: "Especialidad",
+      //       url: "/dashboard/catalogo/especialidad",
+      //     },
+      //     {
+      //       title: "Tipo Citado",
+      //       url: "/dashboard/catalogo/tipo citado",
+      //     },
+      //     {
+      //       title: "Alergia",
+      //       url: "/dashboard/catalogo/alergia",
+      //     },
+      //   ],
+      // },
       {
         title: "Gestion Usuarios",
         url: "#",
@@ -256,31 +256,31 @@ export function AppSidebar({
             title: "Usuarios",
             url: "/dashboard/gestion-usuarios/usuarios",
           },
-          {
-            title: "Roles",
-            url: "/dashboard/gestion-usuarios/roles",
-          },
-          {
-            title: "Permisos",
-            url: "/dashboard/gestion-usuarios/permisos",
-          },
+          // {
+          //   title: "Roles",
+          //   url: "/dashboard/gestion-usuarios/roles",
+          // },
+          // {
+          //   title: "Permisos",
+          //   url: "/dashboard/gestion-usuarios/permisos",
+          // },
         ],
       },
-      {
-        title: "Configuracion",
-        url: "#",
-        icon: Settings,
-        items: [
-          {
-            title: "Mi Clinica",
-            url: "/dashboard/configuracion/mi clinica",
-          },
-          {
-            title: "Tipo Documento",
-            url: "/dashboard/configuracion/tipo documento",
-          },
-        ],
-      },
+      // {
+      //   title: "Configuracion",
+      //   url: "#",
+      //   icon: Settings,
+      //   items: [
+      //     {
+      //       title: "Mi Clinica",
+      //       url: "/dashboard/configuracion/mi clinica",
+      //     },
+      //     {
+      //       title: "Tipo Documento",
+      //       url: "/dashboard/configuracion/tipo documento",
+      //     },
+      //   ],
+      // },
     ],
     // projects: [
     //   {

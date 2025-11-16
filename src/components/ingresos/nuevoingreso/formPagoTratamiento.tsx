@@ -37,34 +37,48 @@ import PacienteSelect from "../../citas/components/PacienteSelect";
 export default function FormTrataPaciente({
   pacientesOptions,
   medicosOptions,
-  tratamientoPacienteOptions,
 }: {
   pacientesOptions: { id: number; nomb_pac: string; apel_pac: string }[];
   medicosOptions: { id: number; name: string }[];
-  tratamientoPacienteOptions: {
-    id: number;
-    asunto: string;
-    paciente: { id: number; name: string };
-  }[];
 }) {
   const fetchWithAuthRedirect = useFetchWithAuthRedirect();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [selectedPaciente, setSelectedPaciente] = useState<number | null>(null);
   const [tratamientosFiltrados, setTratamientosFiltrados] = useState<
-    { id: number; asunto: string; paciente: { id: number; name: string } }[]
+    { id: number; show_str: string; asunto: string; paciente: { id: number; name: string } }[]
   >([]);
 
   useEffect(() => {
-    if (selectedPaciente) {
-      const filtrados = tratamientoPacienteOptions.filter(
-        (t: any) => t.paciente?.id === selectedPaciente
-      );
-      setTratamientosFiltrados(filtrados);
-    } else {
-      setTratamientosFiltrados(tratamientoPacienteOptions);
+  const fetchTratamientos = async () => {
+    console.log("Selected paciente ID:", selectedPaciente);
+    
+    if (!selectedPaciente) {
+      setTratamientosFiltrados([]);
+      return;
     }
-  }, [selectedPaciente, tratamientoPacienteOptions]);
+
+    try {
+      const res = await fetchWithAuthRedirect(
+        `/api/tratamiento_paciente?paciente=${selectedPaciente}`
+      );
+      const data = await res.json();
+
+      if (Array.isArray(data.results)) {
+        setTratamientosFiltrados(data.results);
+      } else if (Array.isArray(data)) {
+        setTratamientosFiltrados(data);
+      } else {
+        console.warn("⚠️ Formato de datos inesperado:", data);
+      }
+    } catch (err) {
+      console.error("❌ Error al cargar tratamientos filtrados:", err);
+      setTratamientosFiltrados([]);
+    }
+  };
+  
+  fetchTratamientos();
+}, [selectedPaciente, fetchWithAuthRedirect]);
 
   const form = useForm<IngresosData>({
     resolver: zodResolver(ingresosSchema),
@@ -115,8 +129,12 @@ export default function FormTrataPaciente({
             <FormControl>
               <PacienteSelect
                 value={selectedPaciente ? String(selectedPaciente) : ""}
-                onChange={(val) => setSelectedPaciente(Number(val))}
+                onChange={(val) => {
+                  console.log("PacienteSelect emitted:", val);
+                  setSelectedPaciente(Number(val));
+                }}
                 pacientesOptions={pacientesOptions}
+                has_debt={true}
               />
             </FormControl>
             <FormMessage />
@@ -141,7 +159,7 @@ export default function FormTrataPaciente({
                   <SelectContent>
                     {tratamientosFiltrados.map((t) => (
                       <SelectItem key={t.id} value={String(t.id)}>
-                        {t.asunto}
+                        {t.show_str}
                       </SelectItem>
                     ))}
                   </SelectContent>

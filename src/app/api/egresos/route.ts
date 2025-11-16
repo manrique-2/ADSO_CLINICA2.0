@@ -9,7 +9,8 @@ export async function GET(req: NextRequest) {
   const pageSize = searchParams.get("page_size");
   const paciente_nombre = searchParams.get("paciente_nombre");
   const tratamiento_nombre = searchParams.get("tratamiento_nombre");
-  const paciente_id = searchParams.get("paciente");
+  const divide = searchParams.get("divide");
+  const tipo_egreso = searchParams.get("tipo_egreso");
   // const fechaRegistroAfter = searchParams.get("fecha_registro_after");
   // const fechaRegistroBefore = searchParams.get("fecha_registro_before");
 
@@ -25,17 +26,13 @@ export async function GET(req: NextRequest) {
   if (tratamiento_nombre) {
     query.set("tratamiento_nombre", tratamiento_nombre);
   }
-  if (paciente_id) {
-    query.set("paciente", paciente_id);
+  if (divide) {
+    query.set("divide", divide);
   }
-  // if (fechaRegistroAfter) {
-  //   query.set("fecha_registro_after", fechaRegistroAfter);
-  // }
-  // if (fechaRegistroBefore) {
-  //   query.set("fecha_registro_before", fechaRegistroBefore);
-  // }
-
-  const url = `/api/tratamiento_paciente/?${query.toString()}`;
+  if (tipo_egreso) {
+    query.set("tipo_egreso", tipo_egreso);
+  }
+  const url = `/api/egresos/?${query.toString()}`;
   console.log("Fetching pacientes from URL:", url);
 
   return await authFetchWithCookies(url);
@@ -44,7 +41,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const body = await req.json();
   console.log("Datos recibidos en backend:", body);
-  const url = `/api/tratamiento_paciente/`;
+  const url = `/api/egresos/`;
 
   return await authFetchWithCookies(url, {
     method: "POST",

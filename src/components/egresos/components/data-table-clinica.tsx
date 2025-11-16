@@ -40,7 +40,7 @@ interface DataTableProps<TData, TValue> {
   // setPageSize: (size: number) => void;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTableClinica<TData, TValue>({
   columns,
   data,
   emptyMessage = "No hay datos disponibles.",
@@ -94,23 +94,15 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         /> */}
-        <div className="flex justify-between ">
-          <div>
-            {/* <Button className="bg-[#337ab7] hover:bg-[#285e8e] cursor-pointer"> */}
-            {/* <Button className="">
-              <Printer />
-              Imprimir Lista
-            </Button> */}
-          </div>
+        <div className="flex justify-end ">
           <div>
             <Link
-              href="/dashboard/tratamiento/registrar/nuevo"
+              href="/dashboard/egresos/nuevo/clinica"
               className="cursor-pointer"
             >
               <Button className="bg-green-600 hover:bg-green-700 cursor-pointer">
-                {/* <UserRoundPlus /> */}
                 <Plus />
-                Nuevo Tratamiento
+                Registrar Egreso de Clinica
               </Button>
             </Link>
           </div>
