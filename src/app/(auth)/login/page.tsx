@@ -30,14 +30,14 @@ export default function LoginPage() {
         </div>
         <LoginForm></LoginForm>
 
-        <div className="text-center">
+        {/* <div className="text-center">
           <Link
             href="/register"
             className="text-sm text-muted-foreground hover:underline"
           >
             ¿No tienes cuenta? Regístrate
           </Link>
-        </div>
+        </div> */}
       </div>
       <div className="flex gap-8 mt-16 text-lg text-black items-center justify-center">
         <a
