@@ -8,7 +8,6 @@ import { useCallback } from "react";
  */
 export function useFetchWithAuthRedirect() {
   const router = useRouter();
-
   const fetchWithAuthRedirect = useCallback(
     async (url: string, options?: RequestInit) => {
       const res = await fetch(url, {

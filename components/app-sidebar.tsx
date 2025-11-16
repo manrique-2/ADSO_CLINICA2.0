@@ -142,7 +142,7 @@ export function AppSidebar({
         ],
       },
       {
-        title: "Ingresos",
+        title: "Transacciones",
         url: "#",
         icon: HandCoins,
         items: [
@@ -150,6 +150,10 @@ export function AppSidebar({
             title: "Pago tratamiento paciente",
             url: "/dashboard/ingresos/pago-tratamientoPaciente",
           },
+          {
+            title: "Registrar Egresos",
+            url: "/dashboard/egresos/",
+          }
         ],
       },
       {
