@@ -3,7 +3,11 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+<<<<<<< HEAD
+# Copiar package.json y lockfile lol
+=======
 # Copiar archivos de dependencias
+>>>>>>> 5de0cfca9bcb8d4b77c244735b4d3114f3df5187
 COPY package*.json ./
 
 # Evitar que Puppeteer descargue Chromium durante el build; usaremos el Chromium del sistema en runtime
