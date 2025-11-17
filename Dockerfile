@@ -3,6 +3,7 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Copiar package.json y lockfile lol
 # Copiar archivos de dependencias
 COPY package*.json ./
 
