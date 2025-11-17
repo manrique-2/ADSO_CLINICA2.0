@@ -87,7 +87,7 @@ export default function TratamientoForm(): JSX.Element {
       }
 
       toast.success("Tratamiento registrado");
-      router.replace("/dashboard/tratamiento/registrar");
+      router.replace("/dashboard/tratamiento/registro");
     } catch (e) {
       console.error(e);
       toast.error("Error al enviar solicitud");
