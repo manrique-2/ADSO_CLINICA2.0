@@ -176,6 +176,10 @@ export function AppSidebar({
             title: "Tratamientos cobrados",
             url: "/dashboard/reportes/tratam cobrados",
           },
+          {
+            title: "Proforma de tratamientos",
+            url: "/dashboard/reportes/proforma",
+          },
         ],
       },
       {
