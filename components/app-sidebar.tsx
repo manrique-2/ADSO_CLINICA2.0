@@ -107,7 +107,7 @@ export function AppSidebar({
         items: [
           {
             title: "Registrar",
-            url: "/dashboard/tratamiento/registrar",
+            url: "/dashboard/tratamiento/registro",
           },
           // {
           //   title: "Comprobantes",

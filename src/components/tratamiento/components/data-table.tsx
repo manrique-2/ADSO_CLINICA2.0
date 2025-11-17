@@ -104,7 +104,7 @@ export function DataTable<TData, TValue>({
           </div>
           <div>
             <Link
-              href="/dashboard/tratamiento/registrar/nuevo"
+              href="/dashboard/tratamiento/registro/nuevo"
               className="cursor-pointer"
             >
               <Button className="bg-green-600 hover:bg-green-700 cursor-pointer">

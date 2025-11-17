@@ -95,7 +95,7 @@ export const columns: ColumnDef<Tratamiento>[] = [
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/dashboard/gestion-usuarios/usuarios/editar/${tratamiento.id}`}
+                  href={`/dashboard/tratamiento/registro/editar/${tratamiento.id}`}
                 >
                   Editar
                 </Link>
